@@ -6,6 +6,11 @@ class EstateProperty(models.Model):
     _name = 'estate.property'
     _description = 'Real Estate Property'
     name = fields.Char(string='Title', required=True)
+    property_type_id = fields.Many2one("property.type", string="Type")
+    salesperson = fields.Many2one('res.users', string='Salesperson', index=True, tracking=True, default=lambda self: self.env.user)
+    buyer_id = fields.Many2one('res.partner', string='Buyer', copy=False)
+    tag_ids = fields.Many2many('property.tag', string='tag')
+    offer_ids = fields.One2many('property.offer', 'estate_property_id', string='offer')
     description = fields.Text(string='Description')
     postcode = fields.Char(string='Postcode')
     date_availability = fields.Date(string='Available From',
@@ -43,3 +48,5 @@ class EstateProperty(models.Model):
         copy=False,
         default='new'
     )
+
+        

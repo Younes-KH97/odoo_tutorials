@@ -32,7 +32,13 @@
                 </div>
                 <group>
                     <group>
+                        <field name="tag_ids" widget="many2many_tags"/>
+                    </group>
+                    <group>
                         <field name="postcode"/>
+                    </group>
+                    <group>
+                        <field name="property_type_id"/>
                     </group>
                     <group>
                         <field name="date_availability"/>
@@ -71,7 +77,27 @@
                         <field name="garden_orientation"/>
                     </group>
                     </page>
+                    <page string="other infos">
+                        <group>
+                            <field name="salesperson"></field>
+                        </group>
+                        <group>
+                            <field name="buyer_id"></field>
+                        </group>
+                    </page>
+                    <page string="offers">
+                        <group>
+                            <field name="expected_price"></field>
+                        </group>
+                        <group>
+                            <field name="salesperson"></field>
+                        </group>
+                        <group>
+                            <field name="state"></field>
+                        </group>
+                    </page>
                 </notebook>
+                
             </sheet>
         </form>
         </field>
@@ -83,6 +109,7 @@
         <field name="arch" type="xml">
             <list string="Channel">
                 <field name="name"/>
+                <field name="tag_ids" widget="many2many_tags"/>
                 <field name="postcode"/>
                 <field name="bedrooms"/>
                 <field name="living_area"/>
