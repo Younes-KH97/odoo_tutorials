@@ -1,6 +1,9 @@
 from odoo import models, fields
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from odoo.exceptions import UserError
+
+from odoo import api
 
 class EstateProperty(models.Model):
     _name = 'estate.property'
@@ -22,7 +25,7 @@ class EstateProperty(models.Model):
     living_area = fields.Integer(string='Living Area (sqm)')
     facades = fields.Integer(string='Number of Facades')
     garage = fields.Boolean(string='Has Garage')
-    garden = fields.Boolean(string='Has Garden')
+    garden = fields.Boolean(string='Has Garden', default=False)
     garden_area = fields.Integer(string='Garden Area (sqm)')
     
     garden_orientation = fields.Selection(
@@ -49,4 +52,50 @@ class EstateProperty(models.Model):
         default='new'
     )
 
-        
+    total_area = fields.Integer('total_area', compute="_compute_total")
+    best_offer = fields.Float('best_offer', compute='_compute_best_offer')
+
+
+    @api.depends('living_area', 'garden_area')
+    def _compute_total(self):
+        for record in self:
+            record.total_area = record.living_area + record.garden_area
+
+    # For mapped based method, see: https://github.com/odoo/odoo/blob/f011c9aacf3a3010c436d4e4f408cd9ae265de1b/addons/account/models/account_payment.py#L686
+    @api.depends('offer_ids.price')
+    def _compute_best_offer(self):
+        for record in self:
+            if record.offer_ids:
+                record.best_offer = max(offer.price for offer in record.offer_ids)
+            else:
+                record.best_offer = 0.0  # or False or None, depending on your field type
+
+    @api.onchange('garden')
+    def _onchange_garden(self):
+        message = None
+        if not self.garden:
+            self.garden_area = 0
+            self.garden_orientation = ''
+            message = "Click on 'Discard' to restore the previous garden values."
+        else:
+            self.garden_area = 10
+            self.garden_orientation = 'north'
+            message = "Click on 'Discard' to restore the original garden settings."
+        # replace this warning instructions by other alert message
+        if message:
+            return {
+                'warning': {
+                    'title': "Information",
+                    'message': message,
+                }
+            }
+    
+    def set_sold(self):
+        if self.state == 'cancelled':
+            raise UserError("Cancelled properties cannot be sold")
+        self.state = 'sold'
+
+    def set_cancelled(self):
+        if self.state == 'sold':
+            raise UserError("Sold properties cannot be cancelled")
+        self.state = 'cancelled'
