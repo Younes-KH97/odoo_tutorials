@@ -24,12 +24,21 @@
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
         <form string="Estate form">
-            <sheet>
-            <group>
-            <group>
+        <sheet>
+                    <group>
+            <header>
                 <button string="SOLD" name="set_sold" type="object" class="oe_highlight"/>
                 <button string="CANCEL" name="set_cancelled" type="object" class=""/>
+                 <field name="state"
+           
+                 widget="statusbar"/>
+            </header>
+
             </group>
+        </sheet>
+            <sheet>
+            <group>
+
             <group>
                 <field name="state"></field>
             </group>

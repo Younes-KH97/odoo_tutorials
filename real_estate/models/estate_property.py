@@ -8,6 +8,7 @@ from odoo import api
 class EstateProperty(models.Model):
     _name = 'estate.property'
     _description = 'Real Estate Property'
+    _order = 'id desc'
     name = fields.Char(string='Title', required=True)
     property_type_id = fields.Many2one("property.type", string="Type")
     salesperson = fields.Many2one('res.users', string='Salesperson', index=True, tracking=True, default=lambda self: self.env.user)
@@ -55,7 +56,6 @@ class EstateProperty(models.Model):
     total_area = fields.Integer('total_area', compute="_compute_total")
     best_offer = fields.Float('best_offer', compute='_compute_best_offer')
 
-
     @api.depends('living_area', 'garden_area')
     def _compute_total(self):
         for record in self:
@@ -72,23 +72,13 @@ class EstateProperty(models.Model):
 
     @api.onchange('garden')
     def _onchange_garden(self):
-        message = None
         if not self.garden:
             self.garden_area = 0
             self.garden_orientation = ''
-            message = "Click on 'Discard' to restore the previous garden values."
         else:
             self.garden_area = 10
             self.garden_orientation = 'north'
-            message = "Click on 'Discard' to restore the original garden settings."
-        # replace this warning instructions by other alert message
-        if message:
-            return {
-                'warning': {
-                    'title': "Information",
-                    'message': message,
-                }
-            }
+
     
     def set_sold(self):
         if self.state == 'cancelled':
@@ -99,3 +89,12 @@ class EstateProperty(models.Model):
         if self.state == 'sold':
             raise UserError("Sold properties cannot be cancelled")
         self.state = 'cancelled'
+
+    _sql_constraints = [
+        ('check_expected_price_positive',
+         'CHECK(expected_price > 0)',
+         'The expected price must be strictly positive.'),
+        ('check_selling_price_non_negative',
+         'CHECK(selling_price >= 0)',
+         'The selling price must be positive or zero.'),
+    ]
