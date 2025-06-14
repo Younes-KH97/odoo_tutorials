@@ -43,7 +43,7 @@
         <field name="arch" type="xml">
             <list string="Channel">
                 <field name="name"/>
-
+                                        <field name="sequence" widget="handle"/>
             </list>
         </field>
     </record>
