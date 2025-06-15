@@ -17,6 +17,9 @@
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
+                    <!-- <button name="" type="object" class="oe_stat_button" icon="fa-">
+                        <field name="offer_count" string="" widget="statinfo"/>
+                    </button> -->
                     <group>
                         <field name="name"></field>
                         <notebook>
@@ -43,7 +46,7 @@
         <field name="arch" type="xml">
             <list string="Channel">
                 <field name="name"/>
-                                        <field name="sequence" widget="handle"/>
+                <field name="sequence" widget="handle"/>
             </list>
         </field>
     </record>

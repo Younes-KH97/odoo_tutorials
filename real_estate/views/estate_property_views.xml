@@ -1,29 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- search -->
-    <record id="estate_property_view_search" model="ir.ui.view">
-        <field name="name">estate.property.view.search</field>
-        <field name="model">estate.property</field>
-        <field name="arch" type="xml">
-            <search string="Search estates">
-                        <!-- Default Filter -->
-                <filter name="available"
-                    string="Available"
-                    domain="[('state', 'in', ('new', 'offer_received'))]"
-                    help="Show only available properties."
-                    default="1"/>
-                <field name="name"/>
-                <field name="postcode"/>
-                <field name="living_area"
-                       filter_domain="[('living_area', '>=', self)]"/>
 
-                <!-- Group By section -->
-                <group expand="1" string="Group By">
-                    <filter name="postcode" string="postcode" context="{'group_by': 'postcode'}"/>            
-                </group>
-            </search>
-        </field>
-    </record>
 
     <!-- form -->
     <record id="estate_property_view_form" model="ir.ui.view">
@@ -149,7 +127,7 @@
         <field name="name">Estate property</field>
         <field name="res_model">estate.property</field>
         <field name="view_mode">list,form</field>
-        <field name="context">{'search_default_state': True}`</field>
+        <!-- <field name="context">{'search_default_state': True}`</field> -->
     </record>
     
 </odoo>

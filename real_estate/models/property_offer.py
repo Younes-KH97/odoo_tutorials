@@ -11,6 +11,7 @@ class PropertyOffer(models.Model):
     _order = 'price desc'
     partner_id = fields.Many2one('res.partner', string='partner_id')
     estate_property_id = fields.Many2one('estate.property', string='property')
+    property_type_id = fields.Many2one('property_type_id', related='estate_property_id.property_type_id')
     price = fields.Float('price')
     status = fields.Selection([
         ('accepted', 'Accepted'),
