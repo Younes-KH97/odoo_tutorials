@@ -19,7 +19,7 @@
         <field name="name">property.tag.view.tree</field>
         <field name="model">property.tag</field>
         <field name="arch" type="xml">
-            <list>
+            <list editable="Bottom">
                 <field name="name"></field>
             </list>
         </field>

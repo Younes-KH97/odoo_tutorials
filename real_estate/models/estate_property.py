@@ -56,6 +56,20 @@ class EstateProperty(models.Model):
     total_area = fields.Integer('total_area', compute="_compute_total")
     best_offer = fields.Float('best_offer', compute='_compute_best_offer')
 
+    is_done = fields.Boolean('is_done', compute="_compute_is_done", store=False)
+    prevent_offers = fields.Boolean(compute='_compute_prevent_offers', 
+                                    string='prevent_offers',
+                                    store=False,
+                                    default=False)
+    
+    @api.depends('state')
+    def _compute_prevent_offers(self):
+        for rec in self:
+            if rec.state in ['offer_accepted','cancelled','sold']:
+                rec.prevent_offers = True
+            else:
+                rec.prevent_offers = False
+
     @api.depends('living_area', 'garden_area')
     def _compute_total(self):
         for record in self:
@@ -70,6 +84,15 @@ class EstateProperty(models.Model):
             else:
                 record.best_offer = 0.0  # or False or None, depending on your field type
 
+    @api.depends('state')
+    def _compute_is_done(self):
+        for record in self:
+            if record.state in ['sold', 'cancelled']: 
+                record.is_done = True
+            else:
+                record.is_done = False
+            
+    
     @api.onchange('garden')
     def _onchange_garden(self):
         if not self.garden:
@@ -78,7 +101,7 @@ class EstateProperty(models.Model):
         else:
             self.garden_area = 10
             self.garden_orientation = 'north'
-
+    
     
     def set_sold(self):
         if self.state == 'cancelled':
@@ -89,6 +112,7 @@ class EstateProperty(models.Model):
         if self.state == 'sold':
             raise UserError("Sold properties cannot be cancelled")
         self.state = 'cancelled'
+
 
     _sql_constraints = [
         ('check_expected_price_positive',

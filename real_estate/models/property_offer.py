@@ -23,6 +23,23 @@ class PropertyOffer(models.Model):
                 string="Deadline",
         compute="_compute_date_deadline",
         inverse="_inverse_date_deadline")
+    is_sold = fields.Boolean(compute='_compute_is_sold', string='is_sold')
+    is_offer_accepted = fields.Boolean(compute='_compute_is_offer_accepted', 
+                                       string='is_offer_accepted',
+                                       default=False)
+    
+    @api.depends('status')
+    def _compute_is_offer_accepted(self):
+        for rec in self:
+            rec.is_offer_accepted = rec.estate_property_id.state in ('offer_accepted','sold','cancelled') 
+    
+    @api.depends('status')
+    def _compute_is_sold(self):
+        for record in self:
+            if record.status == 'accepted':
+                record.is_sold = True
+            else:
+                record.is_sold = False
 
     @api.depends('create_date', 'validity')
     def _compute_date_deadline(self):
@@ -38,6 +55,7 @@ class PropertyOffer(models.Model):
     def accept_offer(self):
         self.estate_property_id.selling_price = self.price
         self.estate_property_id.buyer_id = self.partner_id
+        self.estate_property_id.state = 'offer_accepted'
         self.status = 'accepted'
 
     def refuse_offer(self):
