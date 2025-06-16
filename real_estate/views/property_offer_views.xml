@@ -41,17 +41,15 @@
                         icon="oi-close" 
                         title="Refuse Offer"
                         invisible="is_offer_accepted"/>
-                <!-- <field name="status"></field> -->
             </list>
         </field>
     </record>
 
-    <!-- <record id="property_offer_action" model="ir.actions.act_window">
+    <record id="property_offer_action" model="ir.actions.act_window">
         <field name="name">property offer action</field>
         <field name="res_model">property.offer</field>
         <field name="view_mode">list,form</field>
-            
-        </field>
-    </record> -->
+        <field name="domain">[('property_type_id', '=', active_id)]</field>
+    </record>
 
 </odoo>

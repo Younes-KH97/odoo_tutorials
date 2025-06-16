@@ -11,7 +11,7 @@ class PropertyOffer(models.Model):
     _order = 'price desc'
     partner_id = fields.Many2one('res.partner', string='partner_id')
     estate_property_id = fields.Many2one('estate.property', string='property')
-    property_type_id = fields.Many2one('property_type_id', related='estate_property_id.property_type_id')
+    property_type_id = fields.Many2one('property.type', related='estate_property_id.property_type_id')
     price = fields.Float('price')
     status = fields.Selection([
         ('accepted', 'Accepted'),
@@ -29,6 +29,12 @@ class PropertyOffer(models.Model):
                                        string='is_offer_accepted',
                                        default=False)
     
+    _sql_constraints = [
+        ('check_price_contraint', 
+         'CHECK(price < 1000)', 
+         'The offer price must be strictly positive.'),
+    ]
+
     @api.depends('status')
     def _compute_is_offer_accepted(self):
         for rec in self:
@@ -65,13 +71,16 @@ class PropertyOffer(models.Model):
     @api.constrains('price')
     def check_price(self):
         for record in self:
-            if float_compare(self.price, 
-                             self.estate_property_id.expected_price * 90/100,
-                             precision_rounding=0.1) == -1 :
+            if float_compare(record.price, 
+                             record.estate_property_id.expected_price * 90/100,
+                             precision_rounding=0.01) == -1 :
                 raise ValidationError('Offer price should be at least 90%% of the expected price')
+    
+    @api.constrains('price')
+    def check_price_positivity(self):
+        for record in self:
+            if float_compare(record.price, 
+                             0,
+                             precision_rounding=0.01) == -1 :
+                raise ValidationError('Offer price should be positive')
 
-    _sql_constraints = [
-        ('check_price', 
-         'CHECK(price > 0)', 
-         'The offer price must be strictly positive.'),
-    ]
