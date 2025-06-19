@@ -62,6 +62,10 @@ class EstateProperty(models.Model):
                                     store=False,
                                     default=False)
     
+    @api.constrains('fieldname')
+    def _constrains_fieldname(self):
+        pass
+    
     @api.depends('state')
     def _compute_prevent_offers(self):
         for rec in self:
@@ -116,11 +120,8 @@ class EstateProperty(models.Model):
 
     _sql_constraints = [
         ('check_expected_price_positive',
-         'CHECK(expected_price > 0)',
-         'The expected price must be strictly positive.'),
-        ('check_selling_price_non_negative',
-         'CHECK(selling_price >= 0)',
-         'The selling price must be positive or zero.'),
+         'CHECK(expected_price > 0.0)',
+         'The expected price must be strictly positive.')
     ]
 
 

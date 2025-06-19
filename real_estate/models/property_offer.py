@@ -29,11 +29,11 @@ class PropertyOffer(models.Model):
                                        string='is_offer_accepted',
                                        default=False)
     
-    _sql_constraints = [
-        ('check_price_contraint', 
-         'CHECK(price < 1000)', 
-         'The offer price must be strictly positive.'),
-    ]
+    @api.constrains('price')
+    def _constrains_price(self):
+        for r in self:
+            if r.price <= 0:
+                raise UserError("Offer price must be strictally positive!")
 
     @api.depends('status')
     def _compute_is_offer_accepted(self):
