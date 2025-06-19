@@ -25,30 +25,23 @@
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
         <form string="Estate form">
-        <sheet>
-                    <group>
-            <header>
-                <button string="SOLD" name="set_sold" type="object" class="oe_highlight"
-                        invisible="is_done"/>
-                <button string="CANCEL" name="set_cancelled" type="object" invisible="is_done"/>
-                 <field name="state" widget="statusbar"/>
-            </header>
+        <header>
+            <button string="SOLD" name="set_sold" type="object" class="oe_highlight"
+                    invisible="is_done"/>
+            <button string="CANCEL" name="set_cancelled" type="object" invisible="is_done"/>
 
-            </group>
-        </sheet>
+                <field name="state" widget="statusbar" nolabel="1"/>
+        </header>
             <sheet>
-            <group>
-
-            <group>
-                <field name="state"></field>
-            </group>
-            <group>
-                                <div class="oe_title">
-                    <h2>
-                        <field name="name" nolabel="1"/>
-                    </h2>
-                </div>
-            </group>
+                <group>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name" nolabel="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                    <field name="state"></field>
+                    </group>
                     <group>
                         <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                     </group>

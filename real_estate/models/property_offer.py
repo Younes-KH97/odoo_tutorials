@@ -84,3 +84,15 @@ class PropertyOffer(models.Model):
                              precision_rounding=0.01) == -1 :
                 raise ValidationError('Offer price should be positive')
 
+    @api.model_create_multi
+    def create(self, vals):
+        property_id = vals[0]["estate_property_id"]
+        property = self.env["estate.property"].browse(property_id)
+        offer_price = vals[0]["price"]
+        if any(offer.price > offer_price for offer in property.offer_ids):
+            raise UserError("There is already an offer with a higher price.")
+        property.state = 'offer_received'
+        return super().create(vals)
+
+
+    

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <menuitem id="estate_property_menu_root" name="Estate property">
         <menuitem id="estate_property_menu" name="Advertisements">
             <menuitem id="estate_property_menu_action" action="estate_property_action"/>
@@ -10,5 +9,4 @@
             <menuitem id="property_tag_menu_action" action="property_tag_action"/>
         </menuitem>
     </menuitem>
-
 </odoo>

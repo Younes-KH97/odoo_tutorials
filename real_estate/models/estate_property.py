@@ -122,3 +122,12 @@ class EstateProperty(models.Model):
          'CHECK(selling_price >= 0)',
          'The selling price must be positive or zero.'),
     ]
+
+
+    @api.ondelete(at_uninstall=False)
+    def _check_can_delete(self):
+        for rec in self:
+            if rec.state not in ('new', 'cancelled'):
+                raise UserError("Only properties in 'new' or 'cancelled' state can be deleted.")
+
+    
