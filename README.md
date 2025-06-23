@@ -46,8 +46,18 @@ Each of these was built to strengthen skills in:
 - Git
 
 ---
+## 🖼️ Screenshots
 
-## 🤝 Let's Connect
+### 🏠 Property Form View
+![Kanban View](screenshots/re_1.png)
+
+### 📝 Property Form List
+![Property Form](screenshots/re_2.png)
+
+### 🧾 Customized Invoice
+![Invoice](screenshots/re_env.png)
+
+## Let's Connect
 
 I'm currently open to freelance opportunities involving:
 - Odoo backend customization
