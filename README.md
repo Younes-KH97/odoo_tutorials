@@ -1,11 +1,58 @@
-# Odoo tutorials
+# Odoo Custom Modules – Practice & Learning Portfolio
 
-This repository hosts the code for the bases of the modules used in the
-[official Odoo tutorials](https://www.odoo.com/documentation/latest/developer/tutorials.html).
+This repository contains custom Odoo modules developed as part of my hands-on learning journey with the Odoo framework (version 17/18). The goal is to master both backend and frontend (web) development techniques.
 
-It has 3 branches for each Odoo version: one for the bases, one for the
-[Discover the JS framework](https://www.odoo.com/documentation/latest/developer/tutorials/discover_js_framework.html)
-tutorial's solutions, and one for the
-[Master the Odoo web framework](https://www.odoo.com/documentation/latest/developer/tutorials/master_odoo_web_framework.html)
-tutorial's solutions. For example, `17.0`, `17.0-discover-js-framework-solutions` and
-`17.0-master-odoo-web-framework-solutions`.
+---
+
+## 📦 Featured Modules
+
+### 🏠 Real Estate Management
+A complete module for managing real estate properties.
+
+**Key Features:**
+- Custom models (Property, Offers, Buyers, Tags, etc.)
+- Access control and security rules based on user groups
+- Business logic (state transitions, price offers, validations)
+- Menu items, actions, form views, kanban views
+
+This project follows the structure of the official Odoo tutorial, with enhancements for deeper understanding.
+
+---
+
+## 🎯 Additional Web Practice Modules
+
+To sharpen my frontend and UI development skills, I built several simple modules focused on Odoo's web client:
+
+- **awesome_clicker** – A reactive button counter
+- **awesome_dashboard** – Dashboard-style view using kanban/cards
+- **awesome_gallery** – Dynamic image grid using web widgets
+- **awesome_kanban** – Custom kanban styling and layout testing
+
+Each of these was built to strengthen skills in:
+- `t-esc`, `t-if`, `t-foreach` templating
+- QWeb views and templates
+- Inheritance and view customization
+- Client actions and JS basics (where relevant)
+
+---
+
+## ⚙️ Technologies & Tools
+
+- Odoo 17/18 (Community)
+- Python 3
+- XML/QWeb
+- PostgreSQL
+- Visual Studio Code
+- Git
+
+---
+
+## 🤝 Let's Connect
+
+I'm currently open to freelance opportunities involving:
+- Odoo backend customization
+- QWeb template design
+- Module creation or extension
+
+📧 Feel free to reach out!
+
