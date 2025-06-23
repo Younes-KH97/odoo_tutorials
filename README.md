@@ -48,14 +48,14 @@ Each of these was built to strengthen skills in:
 ---
 ## 🖼️ Screenshots
 
-### 🏠 Property Form View
+### 🏠 Property List
 ![Kanban View](screenshots/re_1.png)
 
-### 📝 Property Form List
+### 📝 Property Form
 ![Property Form](screenshots/re_2.png)
 
 ### 🧾 Customized Invoice
-![Invoice](screenshots/re_env.png)
+![Invoice](screenshots/re_inv.png)
 
 ## Let's Connect
 
