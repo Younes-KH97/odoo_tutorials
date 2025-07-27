@@ -1,5 +1,4 @@
 from odoo import models, fields, api
-from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
 

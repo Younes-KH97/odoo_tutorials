@@ -117,9 +117,9 @@
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
             <list string="Channel"
-            decoration-success="state == 'offer_received'"
-              decoration-primary="state == 'offer_accepted'"
-              decoration-muted="state == 'sold'">
+                    decoration-success="state == 'offer_received'"
+                    decoration-primary="state == 'offer_accepted'"
+                    decoration-muted="state == 'sold'">
                 <field name="name"/>
                 <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                 <field name="postcode"/>
@@ -132,59 +132,59 @@
         </field>
     </record>
 
-<record id="estate_property_view_kanban" model="ir.ui.view">
-    <field name="name">estate.property.view.kanban</field>
-    <field name="model">estate.property</field>
-    <field name="arch" type="xml">
-        <kanban class="o_kanban_example"
-                default_group_by="property_type_id"
-                records_draggable="False">
-            <field name="name"/>
-            <field name="expected_price"/>
-            <field name="best_offer"/>
-            <field name="selling_price"/>
-            <field name="tag_ids"/>
-            <field name="state"/>
-            <templates>
-                <t t-name="kanban-box">
-                    <div class="oe_kanban_global_click o_kanban_card">
-                        <div class="o_kanban_details">
-                            <strong>
-                                Name: <field name="name"/>
-                            </strong>
-                            <div>
-                                Expected price: <field name="expected_price"/>
-                            </div>
-                            <t t-if="record.state.raw_value == 'offer_received'">
+    <record id="estate_property_view_kanban" model="ir.ui.view">
+        <field name="name">estate.property.view.kanban</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_example"
+                    default_group_by="property_type_id"
+                    records_draggable="False">
+                <field name="name"/>
+                <field name="expected_price"/>
+                <field name="best_offer"/>
+                <field name="selling_price"/>
+                <field name="tag_ids"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_card">
+                            <div class="o_kanban_details">
+                                <strong>
+                                    Name: <field name="name"/>
+                                </strong>
                                 <div>
-                                    Best offer: <field name="best_offer"/>
+                                    Expected price: <field name="expected_price"/>
                                 </div>
-                            </t>
-                            <t t-if="record.state.raw_value == 'offer_accepted'">
-                                <div>
-                                    Selling price: <field name="selling_price"/>
+                                <t t-if="record.state.raw_value == 'offer_received'">
+                                    <div>
+                                        Best offer: <field name="best_offer"/>
+                                    </div>
+                                </t>
+                                <t t-if="record.state.raw_value == 'offer_accepted'">
+                                    <div>
+                                        Selling price: <field name="selling_price"/>
+                                    </div>
+                                </t>
+                                
+                                <!-- TAGS -->
+                                <div t-if="record.tag_ids.raw_value">
+                                    <field name="tag_ids"/>
                                 </div>
-                            </t>
-                            
-                            <!-- TAGS -->
-                            <div t-if="record.tag_ids.raw_value">
-                                <field name="tag_ids"/>
-                            </div>
 
-                            <t t-foreach="record.tag_ids.raw_value" t-as="var">
-                            <span><t t-esc="var.display_color" /></span>
-                                
-                                
-                                
-                            </t>
+                                <t t-foreach="record.tag_ids.raw_value" t-as="var">
+                                <span><t t-esc="var.display_color" /></span>
+                                    
+                                    
+                                    
+                                </t>
+                            </div>
                         </div>
-                    </div>
-                </t>
-            </templates>
+                    </t>
+                </templates>
 
-        </kanban>
-    </field>
-</record>
+            </kanban>
+        </field>
+    </record>
 
 
     <record id="estate_property_action" model="ir.actions.act_window">
