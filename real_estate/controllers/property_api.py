@@ -1,28 +1,14 @@
 from odoo import http
-from odoo.http import request
+from odoo.http import request, Response
 import json
 import logging
 
 _logger = logging.getLogger(__name__)
 
 class ControllerName(http.Controller):
-
-    @http.route('/api/v2/property', type='http', auth='none', csrf=False)
-    def add_new_property(self , **kw):
-        args = request.httprequest.data.decode() # from byte string to unicode
-        print(args, "type", type(args))
-        vals = json.loads(args)
-        res = request.env['estate.property'].sudo().create(vals)
-        if res:
-            return request.make_json_response(data={
-                "message": "Data loaded successfully"
-            }, 
-                                              headers=None, 
-                                              cookies=None, 
-                                              status=200)
     
     @http.route('/api/v1/property', type='http', auth='none', csrf=False, methods=['POST'])
-    def create_record(self, **kw):
+    def create_property(self):
         try:
             raw_data = request.httprequest.data.decode('utf-8')
             _logger.info('Raw request data: %s', raw_data)
@@ -38,12 +24,12 @@ class ControllerName(http.Controller):
                     status=400
                 )
     
-            record = request.env['estate.property'].sudo().create(vals)
+            property = request.env['estate.property'].sudo().create(vals)
     
             return request.make_json_response(
                 data={
                     'message': 'Property created successfully',
-                    'id': record.id,
+                    'id': property.id,
                     'status': 'success'
                 },
                 status=201
@@ -69,13 +55,12 @@ class ControllerName(http.Controller):
                 status=500
             )
         
-    # Add pagination and some opt
     @http.route('/api/v1/property', type='http', auth='none', csrf=False, methods=['GET'])
-    def get_records(self, **kw):
+    def get_property(self):
         try:
-            domain = []  # Add domain filters if needed
-            records = request.env['estate.property'].sudo().search(domain)
-            result = records.read(["name", "expected_price", "state", "active"])
+            domain = [] 
+            propertys = request.env['estate.property'].sudo().search(domain)
+            result = propertys.read(["name", "expected_price", "state", "active"])
             return request.make_json_response({
                 'status': 'success',
                 'count': len(result),
@@ -87,60 +72,153 @@ class ControllerName(http.Controller):
                 'error': 'Unexpected error',
                 'details': str(e)
             }, 500)
-        
-    @http.route('/api/v1/property/<int:record_id>', type='http', auth='none', csrf=False, methods=['PUT'])
-    def update_record(self, record_id, **kw):
+         
+    
+    @http.route('/api/v1/property/<int:property_id>', type='http', auth='none', csrf=False, methods=['GET'])
+    def get_property(self, property_id):
         try:
-            data = request.httprequest.data.decode('utf-8')
-            vals = json.loads(data)
-            record = request.env['estate.property'].sudo().browse(record_id)
-            if not record.exists():
-                return request.make_json_response({'error': 'Record not found'}, 404)
-            record.write(vals)
-            return request.make_json_response({'message': 'Updated successfully', 'id': record.id})
+            property = request.env['estate.property'].sudo().browse(property_id)
+            if not property.exists():
+                return Response(
+                    json.dumps({'error': 'property not found'}),
+                    status=404,
+                    content_type='application/json'
+                )
+
+            data = {
+                'name': property.name,
+                'expected_price': property.expected_price,
+                'state': property.state,
+                'active': property.active,
+                'date_availability': property.date_availability,
+            }
+            data = property.read()[0]
+
+
+            return Response(
+                json.dumps({'property': data}, default=str),
+                status=200,
+                content_type='application/json'
+            )
+
         except Exception as e:
-            request._logger.exception('PUT error: %s', str(e))
-            return request.make_json_response({'error': 'Update failed', 'details': str(e)}, 500)
+            _logger.exception('GET error: %s', str(e))
+            return Response(
+                json.dumps({'error': 'Failed to retrieve property', 'details': str(e)}),
+                status=500,
+                content_type='application/json'
+            )
         
-    @http.route('/api/v1/model/<int:record_id>', type='http', auth='none', csrf=False, methods=['DELETE'])
-    def delete_record(self, record_id, **kw):
+    @http.route('/api/v1/property/<int:property_id>', type='http', auth='none', csrf=False, methods=['PUT'])
+    def update_property(self, property_id):
         try:
-            record = request.env['estate.property'].sudo().browse(record_id)
-            if not record.exists():
-                return request.make_json_response({'error': 'Record not found'}, 404)
-            record.unlink()
-            return request.make_json_response({'message': 'Record deleted', 'id': record_id})
-        except Exception as e:
-            request._logger.exception('DELETE error: %s', str(e))
-            return request.make_json_response({'error': 'Deletion failed', 'details': str(e)}, 500)
-        
+            args = request.httprequest.data.decode()
+            values = json.loads(args)
+            if not values:
+                return Response(
+                    json.dumps({'error': 'No input data provided'}),
+                    status=400,
+                    content_type='application/json'
+                )
+            property = request.env['estate.property'].sudo().browse(property_id)
+            if not property.exists():
+                return Response(
+                    json.dumps({'error': 'property not found'}),
+                    status=404,
+                    content_type='application/json'
+                )
     
-    # import logging
-    # _logger = logging.getLogger(__name__)
+            property.write(values)
     
-    @http.route('/api/v1/property/<int:record_id>', type='http', auth='none', csrf=False, methods=['GET'])
-    def get_one_record(self, record_id, **kw):
-        try:
-            model = 'estate.property'
-            record = request.env['estate.property'].sudo().browse(record_id)
+            fields = ['id', 'name', 'state'] 
+            data = property.read(fields)[0]
     
-            if not record.exists():
-                return request.make_json_response({
-                    'error': 'Record not found',
-                    'status': 'fail'
-                }, 404)
-    
-            data = record.read(['field1', 'field2'])[0]
-    
-            return request.make_json_response({
-                'status': 'success',
-                'data': data
-            }, 200)
+            return Response(
+                json.dumps({'property': data}),
+                status=200,
+                content_type='application/json'
+                )
     
         except Exception as e:
-            _logger.exception('Failed to fetch record: %s', str(e))
-            return request.make_json_response({
-                'error': 'An unexpected error occurred',
-                'details': str(e),
-                'status': 'fail'
-            }, 500)
+            _logger.exception('PUT error: %s', str(e))
+            return Response(
+                json.dumps({'error': 'Failed to update property', 'details': str(e)}),
+                status=500,
+                content_type='application/json'
+            )
+
+    @http.route('/api/v1/property/<int:property_id>', type='http', auth='none', csrf=False, methods=['DELETE'])
+    def delete_property(self, property_id):
+        try:
+            property = request.env['estate.property'].sudo().browse(property_id)
+            if not property.exists():
+                return Response(
+                    json.dumps({'error': 'property not found'}),
+                    status=404,
+                    content_type='application/json'
+                )
+
+            if property.state not in ('new', 'cancelled'):
+                return Response(
+                    json.dumps({'error': f'property with state {property.state} cannot be deleted'}),
+                    status=400,
+                    content_type='application/json'
+                )
+
+            property.unlink()
+            return Response(
+                json.dumps({'message': 'property deleted', 'id': property_id}),
+                status=200,
+                content_type='application/json'
+            )
+
+        except Exception as e:
+            _logger.exception('DELETE error: %s', str(e))
+            return Response(
+                json.dumps({'error': 'Deletion failed', 'details': str(e)}),
+                status=500,
+                content_type='application/json'
+            )
+
+
+    @http.route('/api/v2/property', type='http', auth='none', csrf=False, methods=['POST'])
+    def create_property(self, **kw):
+        try:
+            args = request.httprequest.data.decode()
+            values = json.loads(args)
+            if not values:
+                return Response(
+                    json.dumps({'error': 'No input data provided'}),
+                    status=400,
+                    content_type='application/json'
+                )
+            elif not values.get("name") or not values.get("expected_price") or not values.get("state"):
+                return Response(
+                    json.dumps({'error': 'name, expected_price,  state are required'}),
+                               status=400,
+                               content_type='application/json'
+                            )
+            else:
+                property = request.env['estate.property'].sudo().create(values)
+
+                data = {
+                    'id': property.id,
+                    'name': property.name,
+                    'state': property.state,
+                    # Add other fields as needed
+                }
+
+                return Response(
+                    json.dumps({'property': data}),
+                    status=201,
+                    content_type='application/json'
+                )
+
+        except Exception as e:
+            _logger.exception('POST error: %s', str(e))
+            return Response(
+                json.dumps({'error': 'Failed to create property', 'details': str(e)}),
+                status=500,
+                content_type='application/json'
+            )
+
