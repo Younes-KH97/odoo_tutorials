@@ -17,6 +17,8 @@
             <field name="model_id" ref="real_estate.model_estate_property"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
             <field name="groups" eval="[Command.link(ref('real_estate.estate_group_user'))]"/>
             <field name="domain_force">[
                 '|', ('salesperson.id', '=', user.id),
@@ -24,7 +26,13 @@
             ]</field>
         </record>
 
-
+        <record id="estate_manager_read" model="ir.rule">
+            <field name="name">A description of the rule's role</field>
+            <field name="model_id" ref="real_estate.model_estate_property"/>
+            <field name="perm_read" eval="True"/>
+            <field name="groups" eval="[Command.link(ref('real_estate.estate_group_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
 
     </data>
 </odoo>
